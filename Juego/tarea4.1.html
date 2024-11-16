@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio de Sesión</title>
+    <style>
+        body, html {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            display: flex;
+            max-width: 900px;
+            width: 100%;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .form-container {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-container h1 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .spacio {
+            margin-bottom: 15px;
+        }
+
+        .spacio label {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .spacio input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .spacio .ver {
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-40%);
+            cursor: pointer;
+            font-size: 16px;
+            color: #888;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #ff000094;
+        }
+
+        .spacio.position-relative {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h1>INICIAR SESIÓN</h1>
+            <form id="loginForm">
+                <div class="spacio">
+                    <input type="email" id="email" placeholder="Correo Electrónico" required>
+                </div>
+                <div class="spacio position-relative">
+                    <input type="password" id="password" placeholder="Contraseña" required>
+                    <span class="ver" onclick="togglePassword()">👁️</span>
+                </div>
+                <button type="submit">Iniciar sesión</button>
+            </form>
+            <p>¿No tienes cuenta?</p>
+            <a href="tarea4.2.html">Regístrate aquí</a>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const passwordField = document.getElementById('password');
+            const passwordToggle = document.querySelector('.ver');
+            passwordField.type = passwordField.type === 'password' ? 'text' : 'password';
+            passwordToggle.textContent = passwordField.type === 'password' ? '👁️' : '🙈';
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+            const usuario = usuarios.find(u => u.email === email && u.password === password);
+
+            if (usuario) {
+                alert(`Bienvenido, ${usuario.nombre}!`);
+                window.location.href = 'tarea-4.html'; 
+            } else {
+                alert('Correo o contraseña incorrectos.');
+            }
+        });
+    </script>
+</body>
+</html>

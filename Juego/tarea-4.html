@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>play</title>
+    <style>
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+.juego {
+    background-color: #4CAF50;
+    color: white;
+    padding: 20px 0;
+    margin-bottom: 30px;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin: 0;
+    padding: 0;
+}
+
+#opcion {
+    font-size: 1.5rem;
+    margin-top: 10px;
+}
+
+.contenedor-imagenes {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+img {
+    width: 120px;
+    height: 120px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease-in-out;
+}
+
+img:hover {
+    transform: scale(1.1);
+}
+
+button {
+    background: none;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+button:hover {
+    transform: scale(1.1);
+}
+
+.resultados-contanedor {
+    margin-top: 20px;
+}
+
+#resultado {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+#puntos {
+    font-size: 1.2rem;
+    margin-top: 20px;
+}
+
+#ganadas, #perdidas {
+    font-weight: bold;
+}
+
+#reiniciar {
+    background-color: #f44336;
+    color: white;
+    font-size: 1.2rem;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 30px;
+    transition: background-color 0.3s ease;
+}
+
+#reiniciar:hover {
+    background-color: #d32f2f;
+}
+
+@media (max-width: 768px) {
+    .contenedor-imagenes {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .contenedor-imagenes img {
+        width: 100px;
+        height: 100px;
+    }
+
+    #reiniciar {
+        font-size: 1rem;
+        padding: 8px 16px;
+    }
+
+    #opcion, #resultado {
+        font-size: 1.2rem;
+    }
+}
+
+    </style>
+</head>
+<body>
+    <div class="juego">
+        <h1>juego</h1>
+        <p id="opcion">Escoge una opción:</p>
+    </div>
+    
+    <div class="contenedor-imagenes">
+        <img id="computadora" src="piedra.jpg" alt="Imagen de la computadora">
+        <img id="usuario" src="piedra.jpg" alt="Imagen del usuario">
+    </div>
+    
+
+    <div>
+        <button id="piedra">
+            <img src="piedra.jpg" alt="Piedra" class="ataque">
+        </button>
+        <button id="papel">
+            <img src="papel.jpg" alt="Papel" class="ataque">
+        </button>
+        <button id="tijeras">
+            <img src="tijeras.jpg" alt="Tijeras" class="ataque">
+        </button>
+        <button id="lagarto">
+            <img src="lagarto.jpg" alt="Lagarto" class="ataque">
+        </button>
+        <button id="spock">
+            <img src="spock.jpg" alt="Spock" class="ataque">
+        </button>
+    </div>
+
+    <div class="resultados-contanedor">
+        <p id="resultado">¡Selecciona tu opción!</p>
+    </div>
+
+    <div id="puntos">
+        <p>GANADAS: <span id="ganadas">0</span></p>
+        <p>PERDIDAS: <span id="perdidas">0</span></p>
+    </div>
+
+    <button id="reiniciar">De nuevo</button>
+
+    <script>
+        class Opcion {
+            constructor(nombre, vencido) {
+                this.nombre = nombre;
+                this.vencido = vencido;
+            }
+
+            venceA(opcion) {
+                return this.vencido.includes(opcion.nombre);
+            }
+        }
+
+        const OPCIONES = {
+            piedra: new Opcion('piedra', ['lagarto', 'tijeras']),
+            papel: new Opcion('papel', ['piedra', 'spock']),
+            tijeras: new Opcion('tijeras', ['papel', 'lagarto']),
+            spock: new Opcion('spock', ['piedra', 'tijeras']),
+            lagarto: new Opcion('lagarto', ['tijeras', 'papel'])
+        };
+
+        let ganadas = 0;
+        let perdidas = 0;
+        
+
+        function aleatorio() {
+            const opcionA = Object.values(OPCIONES);
+            const indice = Math.floor(Math.random() * opcionA.length);
+            return opcionA[indice];
+        }
+
+        function actualizarPuntos() {
+            document.getElementById('ganadas').textContent = ganadas;
+            document.getElementById('perdidas').textContent = perdidas;
+        }
+
+        function partida(opcionUsuario) {
+            const opcionComputadora = aleatorio();
+            let resultado = `¡Oh no! La computadora eligió ${opcionComputadora.nombre}. `;
+
+            document.getElementById('usuario').src = `${opcionUsuario.nombre}.jpg`;
+            document.getElementById('computadora').src = `${opcionComputadora.nombre}.jpg`;
+
+            if (opcionUsuario.nombre === opcionComputadora.nombre) {
+                resultado += "¡Es un empate! Ambos hicieron la misma elección.";
+            } else if (opcionUsuario.venceA(opcionComputadora)) {
+                resultado += `¡Genial! Tu ${opcionUsuario.nombre} vence a su ${opcionComputadora.nombre}. ¡Bien hecho!`;
+                ganadas++;
+            } else {
+                resultado += `Ups, perdiste. Su ${opcionComputadora.nombre} venció a tu ${opcionUsuario.nombre}. ¡No te rindas!`;
+                perdidas++;
+            }
+
+            document.getElementById('resultado').textContent = resultado;
+            actualizarPuntos();
+        }
+
+        document.getElementById('piedra').addEventListener('click', () => partida(OPCIONES.piedra));
+        document.getElementById('spock').addEventListener('click', () => partida(OPCIONES.spock));
+        document.getElementById('tijeras').addEventListener('click', () => partida(OPCIONES.tijeras));
+        document.getElementById('lagarto').addEventListener('click', () => partida(OPCIONES.lagarto));
+        document.getElementById('papel').addEventListener('click', () => partida(OPCIONES.papel));
+
+        document.getElementById('reiniciar').addEventListener('click', () => {
+            ganadas = 0;
+            perdidas = 0;
+            actualizarPuntos();
+            document.getElementById('resultado').textContent = "¡Vamos de nuevo! Elige tu opción.";
+            document.getElementById('usuario').src = "piedra.jpg"; 
+            document.getElementById('computadora').src = "piedra.jpg";  
+        });
+    </script>
+</body>
+</html>

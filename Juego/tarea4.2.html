@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    <style>
+        body, html {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            display: flex;
+            max-width: 900px;
+            width: 100%;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .form-container {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-container h1 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .spacio {
+            margin-bottom: 15px;
+        }
+
+        .spacio label {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .spacio input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .spacio .ver {
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-40%);
+            cursor: pointer;
+            font-size: 16px;
+            color: #888;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #ff000094;
+        }
+
+        .spacio.position-relative {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h1>REGISTRO</h1>
+            <form id="registroForm">
+                <div class="spacio">
+                    <input type="text" id="nombre" placeholder="Nombre" required>
+                </div>
+                <div class="spacio">
+                    <input type="email" id="email" placeholder="Correo Electrónico" required>
+                </div>
+                <div class="spacio position-relative">
+                    <input type="password" id="password" name="password" placeholder="Introduce tu contraseña" required>
+                    <span class="ver" onclick="togglePassword()">👁️</span>
+                </div>
+                <button type="submit">Registrarse</button>
+            </form>
+            <p>¿Ya tienes una cuenta?</p>
+            <a href="tarea4.1.html">Inicia sesión aquí</a>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const passwordField = document.getElementById('password');
+            const passwordToggle = document.querySelector('.ver');
+            passwordField.type = passwordField.type === 'password' ? 'text' : 'password';
+            passwordToggle.textContent = passwordField.type === 'password' ? '👁️' : '🙈';
+        }
+
+        document.getElementById('registroForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const nombre = document.getElementById('nombre').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+            if (usuarios.some(u => u.email === email)) {
+                alert('Este correo ya está registrado.');
+            } else {
+                usuarios.push({ nombre, email, password });
+                localStorage.setItem('usuarios', JSON.stringify(usuarios));
+                alert('Usuario registrado con éxito.');
+                document.getElementById('registroForm').reset();
+                window.location.href = 'tarea4.1.html';
+            }
+        });
+    </script>
+</body>
+</html>
